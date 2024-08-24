@@ -772,7 +772,7 @@ public class FaceService extends SystemService {
             final Pair<String, SensorProps[]> virtualSensorProps = faceSensorConfigurations
                     .getSensorPairForInstance("virtual");
 
-            if (Utils.isVirtualEnabled(getContext())) {
+            if (Utils.isFaceVirtualEnabled(getContext())) {
                 if (virtualSensorProps != null) {
                     return virtualSensorProps;
                 } else {
@@ -802,7 +802,7 @@ public class FaceService extends SystemService {
             }
 
             final int virtualAt = aidlInstances.indexOf("virtual");
-            if (Flags.faceVhalFeature() && Utils.isVirtualEnabled(getContext())) {
+            if (Flags.faceVhalFeature() && Utils.isFaceVirtualEnabled(getContext())) {
                 if (virtualAt != -1) {
                     //only virtual instance should be returned
                     Slog.i(TAG, "virtual hal is used");
@@ -944,7 +944,7 @@ public class FaceService extends SystemService {
 
     void syncEnrollmentsNow() {
         Utils.checkPermissionOrShell(getContext(), MANAGE_FACE);
-        if (Flags.faceVhalFeature() && Utils.isVirtualEnabled(getContext())) {
+        if (Flags.faceVhalFeature() && Utils.isFaceVirtualEnabled(getContext())) {
             Slog.i(TAG, "Sync virtual enrollments");
             final int userId = ActivityManager.getCurrentUser();
             for (ServiceProvider provider : mRegistry.getProviders()) {

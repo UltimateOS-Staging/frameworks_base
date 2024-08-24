@@ -126,7 +126,7 @@ public class ImageExporter {
     /**
      * Writes the given Bitmap to outputFile.
      */
-    ListenableFuture<File> exportToRawFile(Executor executor, Bitmap bitmap,
+    public ListenableFuture<File> exportToRawFile(Executor executor, Bitmap bitmap,
             final File outputFile) {
         return CallbackToFutureAdapter.getFuture(
                 (completer) -> {
@@ -172,7 +172,7 @@ public class ImageExporter {
      *
      * @return a listenable future result
      */
-    ListenableFuture<Result> export(Executor executor, UUID requestId, Bitmap bitmap,
+    public ListenableFuture<Result> export(Executor executor, UUID requestId, Bitmap bitmap,
             ZonedDateTime captureTime, UserHandle owner, int displayId, String foregroundAppName) {
 
         final Task task = new Task(mResolver, requestId, bitmap, captureTime, foregroundAppName,
@@ -181,6 +181,8 @@ public class ImageExporter {
         return CallbackToFutureAdapter.getFuture(
                 (completer) -> {
                     executor.execute(() -> {
+                        // save images as quickly as possible on the background thread
+                        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                         try {
                             completer.set(task.execute());
                         } catch (ImageExportException | InterruptedException e) {
